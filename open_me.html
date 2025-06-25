@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>С годовщиной 💖</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #ffe0e9, #ffc3a0);
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-size: 2em;
+      color: #4b2e2e;
+      margin-bottom: 10px;
+    }
+
+    #photo {
+      max-width: 90%;
+      max-height: 300px;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      margin: 20px auto;
+      display: none;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    #photo.fade-in {
+      display: block;
+      opacity: 1;
+    }
+
+    #message {
+      font-size: 1.2em;
+      color: #4b2e2e;
+      margin: 20px auto;
+      max-width: 90%;
+      white-space: pre-wrap;
+      min-height: 100px;
+    }
+
+    button {
+      padding: 12px 26px;
+      font-size: 1em;
+      background-color: #ff6b81;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #ff4757;
+    }
+
+    .floaters {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .floater {
+      position: absolute;
+      font-size: 24px;
+      animation: float 10s linear infinite;
+      opacity: 0.7;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.5em; }
+      #message { font-size: 1em; }
+      button { font-size: 0.95em; padding: 10px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="floaters" id="floaters"></div>
+
+  <h1>С годовщиной, любимая ❤️</h1>
+  <img src="" alt="Фото" id="photo">
+  <div id="message">Нажми, если любишь меня 😘</div>
+  <button onclick="showNext()">Нажать</button>
+
+  <audio id="bg-music" loop>
+    <source src="music.mp3" type="audio/mpeg">
+    Твой браузер не поддерживает аудио.
+  </audio>
+
+  <script>
+    const compliments = [
+      "Ты — моё самое тёплое воспоминание и настоящее.",
+      "Ты делаешь каждый мой день ярче.",
+      "Ты умеешь быть светом даже в самые серые дни.",
+      "С тобой я чувствую себя дома.",
+      "Ты — самое важное в моей жизни.",
+      "Улыбка твоя — как солнечный луч.",
+      "Ты вдохновляешь меня быть лучше.",
+      "Твоя доброта бесконечна.",
+      "Ты делаешь этот мир красивее просто своим присутствием.",
+      "Ты — моё счастье и мой смысл."
+    ];
+
+    const photos = [
+      "photo1.jpg", "photo2.jpg", "photo3.jpg", "photo4.jpg", "photo5.jpg",
+      "photo6.jpg", "photo7.jpg", "photo8.jpg", "photo9.jpg", "photo10.jpg"
+    ];
+
+    let index = 0;
+    const messageEl = document.getElementById("message");
+    const photoEl = document.getElementById("photo");
+    const buttonEl = document.querySelector("button");
+    const audio = document.getElementById("bg-music");
+    let musicStarted = false;
+
+    function typeText(element, text, speed = 30) {
+      element.textContent = "";
+      let i = 0;
+      const interval = setInterval(() => {
+        element.textContent += text[i];
+        i++;
+        if (i >= text.length) clearInterval(interval);
+      }, speed);
+    }
+
+    function showNext() {
+      if (!musicStarted) {
+        audio.play().catch(() => {});
+        musicStarted = true;
+      }
+
+      if (index < compliments.length) {
+        // Плавная смена фото
+        photoEl.classList.remove("fade-in");
+        setTimeout(() => {
+          photoEl.src = photos[index];
+          photoEl.classList.add("fade-in");
+        }, 300);
+
+        // Анимация текста
+        typeText(messageEl, compliments[index]);
+
+        if (index === 0) {
+          photoEl.style.display = "block";
+          buttonEl.textContent = "Получить ещё комплимент";
+        }
+
+        index++;
+
+        if (index === compliments.length) {
+          buttonEl.textContent = "Получить главный комплимент";
+        }
+
+      } else {
+        // Финальное письмо
+        const finalText = `💌
+Моя любимая,
+
+(Здесь будет твоё любовное письмо. Просто вставь его сюда.)
+
+Ты — всё, что мне нужно, и даже больше. Спасибо за каждый момент вместе.
+
+Люблю тебя бесконечно. ❤️`;
+
+        photoEl.style.display = "none";
+        buttonEl.style.display = "none";
+        typeText(messageEl, finalText, 20);
+      }
+    }
+
+    // Плавающие элементы
+    const emojis = ['❤️', '🌸', '🐱', '💐', '🌼', '😽', '💮'];
+    const floaters = document.getElementById("floaters");
+    for (let i = 0; i < 40; i++) {
+      const el = document.createElement("div");
+      el.classList.add("floater");
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      el.style.left = Math.random() * 100 + "vw";
+      el.style.animationDelay = Math.random() * 10 + "s";
+      el.style.fontSize = (20 + Math.random() * 20) + "px";
+      floaters.appendChild(el);
+    }
+  </script>
+</body>
+</html>
